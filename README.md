@@ -1,4 +1,4 @@
-# weixin.next
+# weixin.next.core
 
 .Net 下的微信公众号接口库, 用于调用微信公众平台提供的各种数据接口, 处理微信服务器发来的各种消息.
 
@@ -10,7 +10,7 @@
 - 接口名称和消息类型等遵循 .Net 的命名规范. 
 - 异步方法名称后不加 Async 后缀(因为大部分方法都是异步的).
 - 提供 access_token, jsapi_ticket 等的自动过期管理机制 
-- 提供 Asp.net Mvc 示例项目.
+- 提供 Asp.net Mvc(Razor Pages) 示例项目.
 
 ### 简洁高效
 
