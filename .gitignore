@@ -1,0 +1,16 @@
+.vs/
+bin/
+obj/
+packages/
+app_data/
+
+*.suo
+*.user
+*.vsmdi
+*.testsettings
+
+*.pubxml
+launchSettings.json
+
+output/
+publish/

@@ -1,0 +1,18 @@
+﻿@page
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "首页";
+}
+
+<p>这是 Weixin.Next 示例程序.</p>
+
+<h2>设置</h2>
+<p>请按照<a asp-page="weixin/index">说明</a>设置好各项参数.</p>
+
+<h2>网页身份验证</h2>
+
+<p>你可以直接<a asp-page="weixin/auth" asp-page-handler="base">获取用户基本信息(openid)</a>, 或在用户授权通过后<a asp-page="weixin/auth" asp-page-handler="info">获取用户完整信息</a>.</p>
+
+<h2>调用 JSSDK</h2>
+
+<p>你可以查看<a asp-page="weixin/jsscan">JS-SDK 使用范例</a>.</p>
