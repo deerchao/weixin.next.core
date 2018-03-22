@@ -18,7 +18,11 @@ namespace Weixin.Next.Pay
         /// <summary>
         /// 信用卡
         /// </summary>
-        CREDIT
+        CREDIT,
+        /// <summary>
+        /// 其它卡
+        /// </summary>
+        Other
     }
 
     /// <summary>
@@ -153,6 +157,7 @@ namespace Weixin.Next.Pay
             {"JCB", new Bank("JCB", "JCB")},
             {"MASTERCARD", new Bank("MASTERCARD", "MASTERCARD")},
             {"VISA", new Bank("VISA", "VISA")},
+            {"LQT", new Bank("LQT", "零钱通")},
         };
 
         #endregion
@@ -216,7 +221,7 @@ namespace Weixin.Next.Pay
 
             var index = code.IndexOf('_');
             if (index < 0)
-                return null;
+                return new BankCard(Bank.Find(code), BankCardType.Other);
 
             var bankId = code.Substring(0, index);
             var type = (BankCardType)Enum.Parse(typeof(BankCardType), code.Substring(index + 1));
@@ -375,6 +380,14 @@ namespace Weixin.Next.Pay
         /// 可用余额退款
         /// </summary>
         REFUND_SOURCE_RECHARGE_FUNDS
+    }
+
+    public class SceneInfo
+    {
+        public string id { get; set; }
+        public string name { get; set; }
+        public string area_code { get; set; }
+        public string address { get; set; }
     }
 
     public class GoodDetails

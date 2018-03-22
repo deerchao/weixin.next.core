@@ -62,10 +62,6 @@ namespace Weixin.Next.Pay
             /// </summary>
             public Currency refund_fee_type { get; set; }
             /// <summary>
-            /// 操作员帐号, 默认为商户号
-            /// </summary>
-            public string op_user_id { get; set; }
-            /// <summary>
             /// 可选, 退款资金来源, 默认使用未结算资金退款
             /// </summary>
             public RefundSource refund_account { get; set; }
@@ -79,7 +75,6 @@ namespace Weixin.Next.Pay
                 yield return new KeyValuePair<string, string>("total_fee", total_fee.ToString("D"));
                 yield return new KeyValuePair<string, string>("refund_fee", refund_fee.ToString("D"));
                 yield return new KeyValuePair<string, string>("refund_fee_type", refund_fee_type.Code);
-                yield return new KeyValuePair<string, string>("op_user_id", op_user_id);
                 yield return new KeyValuePair<string, string>("refund_account", refund_account.ToString("G"));
             }
         }

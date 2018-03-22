@@ -77,6 +77,10 @@ namespace Weixin.Next.Pay
             /// 扫码支付授权码，设备读取用户微信中的条码或者二维码信息
             /// </summary>
             public string auth_code { get; set; }
+            /// <summary>
+            /// 可选，场景信息
+            /// </summary>
+            public SceneInfo scene_info { get; set; }
 
             public override IEnumerable<KeyValuePair<string, string>> GetFields(IJsonParser jsonParser)
             {

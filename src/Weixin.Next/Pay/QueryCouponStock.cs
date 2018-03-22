@@ -97,10 +97,6 @@ namespace Weixin.Next.Pay
             /// </summary>
             public int? coupon_mininumn { get; set; }
             /// <summary>
-            /// 代金券类型：1-代金券无门槛，2-代金券有门槛互斥，3-代金券有门槛叠加，
-            /// </summary>
-            public int? coupon_type { get; set; }
-            /// <summary>
             /// 批次状态： 1-未激活；2-审批中；4-已激活；8-已作废；16-中止发放；
             /// </summary>
             public int? coupon_stock_status { get; set; }
@@ -112,14 +108,6 @@ namespace Weixin.Next.Pay
             /// 代金券每个人最多能领取的数量, 如果为0，则表示没有限制
             /// </summary>
             public int? max_quota { get; set; }
-            /// <summary>
-            /// 代金券锁定数量
-            /// </summary>
-            public int? locked_num { get; set; }
-            /// <summary>
-            /// 代金券已使用数量
-            /// </summary>
-            public int? used_num { get; set; }
             /// <summary>
             /// 代金券已经发送的数量
             /// </summary>
@@ -154,12 +142,9 @@ namespace Weixin.Next.Pay
                 coupon_name = GetValue(values, "coupon_name");
                 coupon_value = GetIntValue(values, "coupon_value");
                 coupon_mininumn = GetIntValue(values, "coupon_mininumn");
-                coupon_type = GetIntValue(values, "coupon_type");
                 coupon_stock_status = GetIntValue(values, "coupon_stock_status");
                 coupon_total = GetIntValue(values, "coupon_total");
                 max_quota = GetIntValue(values, "max_quota");
-                locked_num = GetIntValue(values, "locked_num");
-                used_num = GetIntValue(values, "used_num");
                 is_send_num = GetIntValue(values, "is_send_num");
                 coupon_budget = GetIntValue(values, "coupon_budget");
 

@@ -119,6 +119,10 @@ namespace Weixin.Next.Pay
             /// 返回当日退款订单 
             /// </summary>
             REFUND,
+            /// <summary>
+            /// 返回当日充值退款订单
+            /// </summary>
+            RECHARGE_REFUND,
         }
 
         public enum TarType
