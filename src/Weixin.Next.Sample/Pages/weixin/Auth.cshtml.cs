@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Weixin.Next.MP.Api;
@@ -9,11 +10,11 @@ namespace Weixin.Next.Sample.Pages
 {
     public class AuthModel : PageModel
     {
-        private readonly IMpSettings _settings;
+        private readonly MpSettings _settings;
 
-        public AuthModel(IMpSettings settings)
+        public AuthModel(IOptions<MpSettings> settings)
         {
-            _settings = settings;
+            _settings = settings.Value;
         }
 
         public string WxConfig { get; set; }

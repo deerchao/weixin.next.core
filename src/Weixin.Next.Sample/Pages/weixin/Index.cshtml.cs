@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -11,11 +12,11 @@ namespace Weixin.Next.Sample.Pages
     public class WeixinModel : PageModel
     {
         private readonly MessageCenter _messageCenter;
-        private readonly IMpSettings _settings;
+        private readonly MpSettings _settings;
 
-        public WeixinModel(IMpSettings settings, MessageCenter messageCenter)
+        public WeixinModel(IOptions<MpSettings> settings, MessageCenter messageCenter)
         {
-            _settings = settings;
+            _settings = settings.Value;
             _messageCenter = messageCenter;
         }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Weixin.Next.MP.Api;
@@ -9,12 +10,12 @@ namespace Weixin.Next.Sample.Pages
 {
     public class JsScanModel : PageModel
     {
-        private readonly IMpSettings _settings;
+        private readonly MpSettings _settings;
         private readonly IJsapiTicketManager _jsapi;
 
-        public JsScanModel(IMpSettings settings, IJsapiTicketManager jsapi)
+        public JsScanModel(IOptions<MpSettings> settings, IJsapiTicketManager jsapi)
         {
-            _settings = settings;
+            _settings = settings.Value;
             _jsapi = jsapi;
         }
 

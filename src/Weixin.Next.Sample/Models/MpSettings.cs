@@ -1,15 +1,6 @@
 ﻿namespace Weixin.Next.Sample.Models
 {
-    public interface IMpSettings
-    {
-        string AppId { get; }
-        string AppSecret { get; }
-        string Token { get; }
-        string EncodingAESKey { get; }
-        bool LoggingEnabled { get; }
-    }
-
-    public class MpSettings : IMpSettings
+    public class MpSettings
     {
         public string AppId { get; set; }
         public string AppSecret { get; set; }
