@@ -54,6 +54,14 @@ namespace Weixin.Next.Pay
             /// 调用接口提交的商户号, 仅在return_code为SUCCESS的时候有意义
             /// </summary>
             public string mch_id { get; set; }
+            /// <summary>
+            /// 微信分配的子商户公众账号ID, 仅在服务商账号调用且return_code为SUCCESS的时候有意义
+            /// </summary>
+            public string sub_appid { get; set; }
+            /// <summary>
+            /// 微信支付分配的子商户号, 仅在服务商账号调用且return_code为SUCCESS的时候有意义
+            /// </summary>
+            public string sub_mch_id { get; set; }
 
             /// <summary>
             /// 对于业务执行的详细描述，仅在return_code为SUCCESS的时候有意义
@@ -65,6 +73,8 @@ namespace Weixin.Next.Pay
             {
                 appid = GetValue(values, "appid");
                 mch_id = GetValue(values, "mch_id");
+                sub_appid = GetValue(values, "sub_appid");
+                sub_mch_id = GetValue(values, "sub_mch_id");
             }
 
             protected override void DeserializeSuccessFields(List<KeyValuePair<string, string>> values, IJsonParser jsonParser, XElement xml)

@@ -95,9 +95,13 @@ namespace Weixin.Next.Pay
             /// </summary>
             public PayLimitation? limit_pay { get; set; }
             /// <summary>
-            /// trade_type=JSAPI 时，此参数必传，用户在商户appid下的唯一标识
+            /// trade_type=JSAPI，此参数必传，用户在主商户appid下的唯一标识。openid和sub_openid可以选传其中之一，如果选择传sub_openid,则必须传sub_appid
             /// </summary>
             public string openid { get; set; }
+            /// <summary>
+            /// trade_type=JSAPI，此参数必传，用户在子商户appid下的唯一标识。openid和sub_openid可以选传其中之一，如果选择传sub_openid,则必须传sub_appid
+            /// </summary>
+            public string sub_openid { get; set; }
 
             public override IEnumerable<KeyValuePair<string, string>> GetFields(IJsonParser jsonParser)
             {
@@ -117,6 +121,7 @@ namespace Weixin.Next.Pay
                 yield return new KeyValuePair<string, string>("product_id", product_id);
                 yield return new KeyValuePair<string, string>("limit_pay", limit_pay?.ToString("g"));
                 yield return new KeyValuePair<string, string>("openid", openid);
+                yield return new KeyValuePair<string, string>("sub_openid", sub_openid);
             }
         }
 
@@ -130,6 +135,14 @@ namespace Weixin.Next.Pay
             /// 调用接口提交的商户号, 仅在return_code为SUCCESS的时候有意义
             /// </summary>
             public string mch_id { get; set; }
+            /// <summary>
+            /// 微信分配的子商户公众账号ID, 仅在服务商账号调用且return_code为SUCCESS的时候有意义
+            /// </summary>
+            public string sub_appid { get; set; }
+            /// <summary>
+            /// 微信支付分配的子商户号, 仅在服务商账号调用且return_code为SUCCESS的时候有意义
+            /// </summary>
+            public string sub_mch_id { get; set; }
             /// <summary>
             /// 调用接口提交的终端设备号, 仅在return_code为SUCCESS的时候有意义
             /// </summary>
@@ -152,6 +165,8 @@ namespace Weixin.Next.Pay
             {
                 appid = GetValue(values, "appid");
                 mch_id = GetValue(values, "mch_id");
+                sub_appid = GetValue(values, "sub_appid");
+                sub_mch_id = GetValue(values, "sub_mch_id");
                 device_info = GetValue(values, "device_info");
             }
 

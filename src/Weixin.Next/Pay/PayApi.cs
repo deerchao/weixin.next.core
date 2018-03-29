@@ -18,6 +18,9 @@ namespace Weixin.Next.Pay
 
         public virtual string AppIdFieldName { get { return "appid"; } }
         public virtual string MerchantIdFieldName { get { return "mch_id"; } }
+
+        public virtual string SubAppIdFieldName { get { return "sub_appid"; } }
+        public virtual string SubMerchantIdFieldName { get { return "sub_mch_id"; } }
     }
 
     /// <summary>

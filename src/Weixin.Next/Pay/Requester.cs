@@ -36,18 +36,22 @@ namespace Weixin.Next.Pay
         private string BuildRequestBody(OutcomingData data)
         {
             var nonce = _random.Next().ToString("D");
-            var items = data.GetFields(_jsonParser).Concat(new[]
-                {
-                    new KeyValuePair<string, string>(data.AppIdFieldName, _appid),
-                    new KeyValuePair<string, string>(data.MerchantIdFieldName, _mch_id),
-                    new KeyValuePair<string, string>("nonce_str", nonce),
-                }).Where(x => !string.IsNullOrEmpty(x.Value))
+            var items = data.GetFields(_jsonParser).Concat(GetCommonOutcomingFields(data)).Where(x => !string.IsNullOrEmpty(x.Value))
                 .ToList();
 
             items.Add(new KeyValuePair<string, string>("sign", ComputeSign(items)));
 
             var xml = new XElement("xml", items.Select(x => new XElement(x.Key, x.Value)));
             return xml.ToString(SaveOptions.DisableFormatting);
+        }
+
+        protected virtual IEnumerable<KeyValuePair<string, string>> GetCommonOutcomingFields(OutcomingData data)
+        {
+            yield return new KeyValuePair<string, string>(data.AppIdFieldName, _appid);
+            yield return new KeyValuePair<string, string>(data.MerchantIdFieldName, _mch_id);
+
+            var nonce = _random.Next().ToString("D");
+            yield return new KeyValuePair<string, string>("nonce_str", nonce);
         }
 
         private string ComputeSign(List<KeyValuePair<string, string>> items)
@@ -115,6 +119,28 @@ namespace Weixin.Next.Pay
         protected virtual HttpClient CreateHttpClient(HttpMessageHandler handler)
         {
             return new HttpClient(handler);
+        }
+    }
+
+    public class ServiceProviderRequester : Requester
+    {
+        private readonly string _sub_appid;
+        private readonly string _sub_mch_id;
+
+        public ServiceProviderRequester(string appid, string mch_id, string sub_app_id, string sub_mch_id, string key, X509Certificate2 cert, IJsonParser jsonParser)
+            : base(appid, mch_id, key, cert, jsonParser)
+        {
+            _sub_appid = sub_app_id;
+            _sub_mch_id = sub_mch_id;
+        }
+
+        protected override IEnumerable<KeyValuePair<string, string>> GetCommonOutcomingFields(OutcomingData data)
+        {
+            foreach (var item in base.GetCommonOutcomingFields(data))
+                yield return item;
+
+            yield return new KeyValuePair<string, string>(data.SubAppIdFieldName, _sub_appid);
+            yield return new KeyValuePair<string, string>(data.SubMerchantIdFieldName, _sub_mch_id);
         }
     }
 }

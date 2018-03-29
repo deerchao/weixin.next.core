@@ -87,6 +87,11 @@ namespace Weixin.Next.Pay
                 get { return "wxappid"; }
             }
 
+            public override string SubAppIdFieldName
+            {
+                get { return "msgappid"; }
+            }
+
             public override IEnumerable<KeyValuePair<string, string>> GetFields(IJsonParser jsonParser)
             {
                 yield return new KeyValuePair<string, string>("mch_billno", mch_billno);
