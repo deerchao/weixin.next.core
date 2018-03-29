@@ -246,5 +246,13 @@ namespace Weixin.Next.Pay
         {
             return new GetHBInfo(_requester, _checkSignature, _sandbox, _generateReport);
         }
+
+        /// <summary>
+        /// 撤销订单
+        /// </summary>
+        public Reverse Reverse()
+        {
+            return new Reverse(_requester, _checkSignature, _sandbox, _generateReport);
+        }
     }
 }
