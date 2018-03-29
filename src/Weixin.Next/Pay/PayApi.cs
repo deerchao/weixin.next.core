@@ -123,6 +123,19 @@ namespace Weixin.Next.Pay
         }
     }
 
+    internal static class Stage
+    {
+        public const string ProductionRootUrl = "https://api.mch.weixin.qq.com/";
+        public const string SandboxRootUrl = "https://api.mch.weixin.qq.com/sandboxnew/";
+
+        public static string GetApiRootUrl(bool sandbox)
+        {
+            return sandbox
+                ? SandboxRootUrl
+                : ProductionRootUrl;
+        }
+    }
+
     public abstract class PayApi<TOutcoming, TIncoming, TErrorCode>
         where TOutcoming : OutcomingData
         where TIncoming : IncomingData<TErrorCode>, new()
@@ -133,13 +146,25 @@ namespace Weixin.Next.Pay
 
         protected readonly Requester _requester;
         protected readonly bool _checkSignature;
+        protected readonly bool _sandbox;
 
-        protected PayApi(Requester requester, bool checkSignature, bool generateReport)
+        protected const string ProductionRootUrl = Stage.ProductionRootUrl;
+        protected const string SandboxRootUrl = Stage.SandboxRootUrl;
+
+        protected PayApi(Requester requester, bool checkSignature, bool sandbox, bool generateReport)
         {
             _requester = requester;
             _checkSignature = checkSignature;
             if (generateReport)
                 _reportOutcoming = new Report.Outcoming();
+        }
+
+        protected string ApiRootUrl
+        {
+            get
+            {
+                return Stage.GetApiRootUrl(_sandbox);
+            }
         }
 
         /// <summary>
@@ -159,7 +184,7 @@ namespace Weixin.Next.Pay
                 await StartReportGeneration(interface_url, device_info).ConfigureAwait(false);
             }
 
-            var incoming = await _requester.SendRequest<TIncoming, TErrorCode>("https://api.mch.weixin.qq.com/pay/unifiedorder", requiresCert, outcoming, _checkSignature).ConfigureAwait(false);
+            var incoming = await _requester.SendRequest<TIncoming, TErrorCode>(interface_url, requiresCert, outcoming, _checkSignature).ConfigureAwait(false);
 
             if (_reportOutcoming != null)
             {

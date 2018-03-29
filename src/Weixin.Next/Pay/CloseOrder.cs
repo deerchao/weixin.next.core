@@ -10,8 +10,8 @@ namespace Weixin.Next.Pay
     /// </summary>
     public class CloseOrder : PayApi<CloseOrder.Outcoming, CloseOrder.Incoming, CloseOrder.ErrorCode>
     {
-        public CloseOrder(Requester requester, bool checkSignature, bool generateReport)
-            : base(requester, checkSignature, generateReport)
+        public CloseOrder(Requester requester, bool checkSignature, bool sandbox, bool generateReport)
+            : base(requester, checkSignature, sandbox, generateReport)
         {
         }
 
@@ -27,7 +27,7 @@ namespace Weixin.Next.Pay
 
         protected override void GetApiUrl(Outcoming outcoming, out string interface_url, out bool requiresCert)
         {
-            interface_url = "https://api.mch.weixin.qq.com/pay/closeorder";
+            interface_url = ApiRootUrl + "pay/closeorder";
             requiresCert = false;
         }
 

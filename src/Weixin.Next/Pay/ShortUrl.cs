@@ -10,14 +10,14 @@ namespace Weixin.Next.Pay
     /// </summary>
     public class ShortUrl : PayApi<ShortUrl.Outcoming, ShortUrl.Incoming, ShortUrl.ErrorCode>
     {
-        public ShortUrl(Requester requester, bool checkSignature, bool generateReport) 
-            : base(requester, checkSignature, generateReport)
+        public ShortUrl(Requester requester, bool checkSignature, bool sandbox, bool generateReport) 
+            : base(requester, checkSignature, sandbox, generateReport)
         {
         }
 
         protected override void GetApiUrl(Outcoming outcoming, out string interface_url, out bool requiresCert)
         {
-            interface_url = "https://api.mch.weixin.qq.com/tools/shorturl";
+            interface_url = Stage.ProductionRootUrl + "tools/shorturl";
             requiresCert = false;
         }
 

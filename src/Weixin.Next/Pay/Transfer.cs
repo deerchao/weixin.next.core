@@ -11,8 +11,8 @@ namespace Weixin.Next.Pay
     /// </summary>
     public class Transfer : PayApi<Transfer.Outcoming, Transfer.Incoming, Transfer.ErrorCode>
     {
-        public Transfer(Requester requester, bool checkSignature, bool generateReport)
-            : base(requester, checkSignature, generateReport)
+        public Transfer(Requester requester, bool checkSignature, bool sandbox, bool generateReport)
+            : base(requester, checkSignature, sandbox, generateReport)
         {
         }
 
@@ -28,7 +28,7 @@ namespace Weixin.Next.Pay
 
         protected override void GetApiUrl(Outcoming outcoming, out string interface_url, out bool requiresCert)
         {
-            interface_url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
+            interface_url = ApiRootUrl + "mmpaymkttransfers/promotion/transfers";
             requiresCert = true;
         }
 

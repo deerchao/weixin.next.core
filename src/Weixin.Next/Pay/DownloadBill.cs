@@ -16,11 +16,13 @@ namespace Weixin.Next.Pay
     {
         private readonly Requester _requester;
         private readonly bool _checkSignature;
+        private readonly bool _sandbox;
 
-        public DownloadBill(Requester requester, bool checkSignature)
+        public DownloadBill(Requester requester, bool checkSignature, bool sandbox)
         {
             _requester = requester;
             _checkSignature = checkSignature;
+            _sandbox = sandbox;
         }
 
         /// <summary>
@@ -32,7 +34,8 @@ namespace Weixin.Next.Pay
         /// <returns>正常情况: true, 出错时: false</returns>
         public async Task<bool> Invoke(Outcoming outcoming, AsyncOutParameter<Stream> stream, AsyncOutParameter<Incoming> incoming)
         {
-            var response = await _requester.GetResponse("https://api.mch.weixin.qq.com/pay/downloadbill", false, outcoming).ConfigureAwait(false);
+            var url = Stage.GetApiRootUrl(_sandbox) + "pay/downloadbill";
+            var response = await _requester.GetResponse(url, false, outcoming).ConfigureAwait(false);
             var netStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             var peekStream = new PeekableStream(netStream, 1);
             var buffer = new byte[1];

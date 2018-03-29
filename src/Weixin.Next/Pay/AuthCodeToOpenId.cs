@@ -11,14 +11,14 @@ namespace Weixin.Next.Pay
     /// </summary>
     public class AuthCodeToOpenId : PayApi<AuthCodeToOpenId.Outcoming, AuthCodeToOpenId.Incoming, AuthCodeToOpenId.ErrorCode>
     {
-        public AuthCodeToOpenId(Requester requester, bool checkSignature, bool generateReport) 
-            : base(requester, checkSignature, generateReport)
+        public AuthCodeToOpenId(Requester requester, bool checkSignature, bool sandbox, bool generateReport) 
+            : base(requester, checkSignature, sandbox, generateReport)
         {
         }
 
         protected override void GetApiUrl(Outcoming outcoming, out string interface_url, out bool requiresCert)
         {
-            interface_url = "https://api.mch.weixin.qq.com/tools/authcodetoopenid";
+            interface_url = Stage.ProductionRootUrl + "tools/authcodetoopenid";
             requiresCert = false;
         }
 

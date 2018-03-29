@@ -20,7 +20,8 @@ namespace Weixin.Next.Pay
 
         public Task<Incoming> Invoke(Outcoming outcoming)
         {
-            return _requester.SendRequest<Incoming, ErrorCode>("https://api.mch.weixin.qq.com/payitil/report", false, outcoming, false);
+            var url = Stage.ProductionRootUrl + "payitil/report";
+            return _requester.SendRequest<Incoming, ErrorCode>(url, false, outcoming, false);
         }
 
         public class Outcoming : OutcomingData

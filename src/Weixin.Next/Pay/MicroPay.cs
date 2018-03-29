@@ -11,8 +11,8 @@ namespace Weixin.Next.Pay
     /// </summary>
     public class MicroPay : PayApi<MicroPay.Outcoming, MicroPay.Incoming, MicroPay.ErrorCode>
     {
-        public MicroPay(Requester requester, bool checkSignature, bool generateReport)
-            : base(requester, checkSignature, generateReport)
+        public MicroPay(Requester requester, bool checkSignature, bool sandbox, bool generateReport)
+            : base(requester, checkSignature, sandbox, generateReport)
         {
         }
 
@@ -28,7 +28,7 @@ namespace Weixin.Next.Pay
 
         protected override void GetApiUrl(Outcoming outcoming, out string interface_url, out bool requiresCert)
         {
-            interface_url = "https://api.mch.weixin.qq.com/pay/micropay";
+            interface_url = ApiRootUrl + "pay/micropay";
             requiresCert = false;
         }
 

@@ -11,8 +11,8 @@ namespace Weixin.Next.Pay
     /// </summary>
     public class QueryCouponStock : PayApi<QueryCouponStock.Outcoming, QueryCouponStock.Incoming, QueryCouponStock.ErrorCode>
     {
-        public QueryCouponStock(Requester requester, bool checkSignature, bool generateReport)
-            : base(requester, checkSignature, generateReport)
+        public QueryCouponStock(Requester requester, bool checkSignature, bool sandbox, bool generateReport)
+            : base(requester, checkSignature, sandbox, generateReport)
         {
         }
 
@@ -28,7 +28,7 @@ namespace Weixin.Next.Pay
 
         protected override void GetApiUrl(Outcoming outcoming, out string interface_url, out bool requiresCert)
         {
-            interface_url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/query_coupon_stock";
+            interface_url = ApiRootUrl + "mmpaymkttransfers/query_coupon_stock";
             requiresCert = false;
         }
 

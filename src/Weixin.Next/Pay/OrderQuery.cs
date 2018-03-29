@@ -11,14 +11,14 @@ namespace Weixin.Next.Pay
     /// </summary>
     public class OrderQuery : PayApi<OrderQuery.Outcoming, OrderQuery.Incoming, OrderQuery.ErrorCode>
     {
-        public OrderQuery(Requester requester, bool checkSignature, bool generateReport)
-            : base(requester, checkSignature, generateReport)
+        public OrderQuery(Requester requester, bool checkSignature, bool sandbox, bool generateReport)
+            : base(requester, checkSignature, sandbox, generateReport)
         {
         }
 
         protected override void GetApiUrl(Outcoming outcoming, out string interface_url, out bool requiresCert)
         {
-            interface_url = "https://api.mch.weixin.qq.com/pay/orderquery";
+            interface_url = ApiRootUrl + "pay/orderquery";
             requiresCert = false;
         }
 

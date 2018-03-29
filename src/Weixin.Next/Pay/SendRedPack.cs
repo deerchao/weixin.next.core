@@ -10,8 +10,8 @@ namespace Weixin.Next.Pay
     /// </summary>
     public class SendRedPack : PayApi<SendRedPack.Outcoming, SendRedPack.Incoming, SendRedPack.ErrorCode>
     {
-        public SendRedPack(Requester requester, bool checkSignature, bool generateReport)
-            : base(requester, checkSignature, generateReport)
+        public SendRedPack(Requester requester, bool checkSignature, bool sandbox, bool generateReport)
+            : base(requester, checkSignature, sandbox, generateReport)
         {
         }
 
@@ -27,7 +27,7 @@ namespace Weixin.Next.Pay
 
         protected override void GetApiUrl(Outcoming outcoming, out string interface_url, out bool requiresCert)
         {
-            interface_url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack";
+            interface_url = ApiRootUrl + "mmpaymkttransfers/sendredpack";
             requiresCert = true;
         }
 

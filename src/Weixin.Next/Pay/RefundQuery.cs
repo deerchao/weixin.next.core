@@ -11,8 +11,8 @@ namespace Weixin.Next.Pay
     /// </summary>
     public class RefundQuery : PayApi<RefundQuery.Outcoming, RefundQuery.Incoming, RefundQuery.ErrorCode>
     {
-        public RefundQuery(Requester requester, bool checkSignature, bool generateReport)
-            : base(requester, checkSignature, generateReport)
+        public RefundQuery(Requester requester, bool checkSignature, bool sandbox, bool generateReport)
+            : base(requester, checkSignature, sandbox, generateReport)
         {
         }
 
@@ -28,7 +28,7 @@ namespace Weixin.Next.Pay
 
         protected override void GetApiUrl(Outcoming outcoming, out string interface_url, out bool requiresCert)
         {
-            interface_url = "https://api.mch.weixin.qq.com/pay/refundquery";
+            interface_url = ApiRootUrl + "pay/refundquery";
             requiresCert = false;
         }
 

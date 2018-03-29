@@ -11,8 +11,8 @@ namespace Weixin.Next.Pay
     /// </summary>
     public class QueryCouponsInfo : PayApi<QueryCouponsInfo.Outcoming, QueryCouponsInfo.Incoming, QueryCouponsInfo.ErrorCode>
     {
-        public QueryCouponsInfo(Requester requester, bool checkSignature, bool generateReport)
-            : base(requester, checkSignature, generateReport)
+        public QueryCouponsInfo(Requester requester, bool checkSignature, bool sandbox, bool generateReport)
+            : base(requester, checkSignature, sandbox, generateReport)
         {
         }
 
@@ -28,7 +28,7 @@ namespace Weixin.Next.Pay
 
         protected override void GetApiUrl(Outcoming outcoming, out string interface_url, out bool requiresCert)
         {
-            interface_url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/querycouponsinfo";
+            interface_url = ApiRootUrl + "mmpaymkttransfers/querycouponsinfo";
             requiresCert = false;
         }
 
@@ -199,7 +199,7 @@ namespace Weixin.Next.Pay
                 consumer_mch_id = GetValue(values, "consumer_mch_id");
                 consumer_mch_appid = GetValue(values, "consumer_mch_appid");
                 is_partial_use = GetValue(values, "is_partial_use");
-                send_source =(SendSource)Enum.Parse(typeof(SendSource), GetValue(values, "send_source"));
+                send_source = (SendSource)Enum.Parse(typeof(SendSource), GetValue(values, "send_source"));
 
                 begin_time = DateTime.ParseExact(GetValue(values, "begin_time"), "yyyyMMddHHmmss", null);
                 end_time = DateTime.ParseExact(GetValue(values, "end_time"), "yyyyMMddHHmmss", null);

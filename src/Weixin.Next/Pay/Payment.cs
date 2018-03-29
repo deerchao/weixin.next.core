@@ -14,6 +14,7 @@ namespace Weixin.Next.Pay
     {
         private readonly Requester _requester;
         private readonly bool _checkSignature;
+        private readonly bool _sandbox;
         private readonly bool _generateReport;
 
         /// <summary>
@@ -24,10 +25,11 @@ namespace Weixin.Next.Pay
         /// <param name="key">签名 key</param>
         /// <param name="cert">微信支付安全证书</param>
         /// <param name="checkSignature">发送请求时是否检查服务器返回数据的签名</param>
+        /// <param name="sandbox">是否使用微信支付沙盒环境</param>
         /// <param name="generateReport">发送请求时是否生成报告, 准备发送</param>
         /// <param name="jsonParser">用于序列化/反序列化下单接口中的 detail 字段</param>
-        public Payment(string appid, string mch_id, string key, X509Certificate2 cert, bool checkSignature, bool generateReport, IJsonParser jsonParser)
-            : this(new Requester(appid, mch_id, key, cert, jsonParser), checkSignature, generateReport)
+        public Payment(string appid, string mch_id, string key, X509Certificate2 cert, bool checkSignature, bool sandbox, bool generateReport, IJsonParser jsonParser)
+            : this(new Requester(appid, mch_id, key, cert, jsonParser), checkSignature, sandbox, generateReport)
         {
         }
 
@@ -36,11 +38,13 @@ namespace Weixin.Next.Pay
         /// </summary>
         /// <param name="requester">处理与服务器通信的组件</param>
         /// <param name="checkSignature">发送请求时是否检查服务器返回数据的签名</param>
+        /// <param name="sandbox">是否使用微信支付沙盒环境</param>
         /// <param name="generateReport">发送请求时是否生成报告, 准备发送</param>
-        public Payment(Requester requester, bool checkSignature, bool generateReport)
+        public Payment(Requester requester, bool checkSignature, bool sandbox, bool generateReport)
         {
             _requester = requester;
             _checkSignature = checkSignature;
+            _sandbox = sandbox;
             _generateReport = generateReport;
         }
 
@@ -50,7 +54,7 @@ namespace Weixin.Next.Pay
         /// <returns></returns>
         public UnifiedOrder UnifiedOrder()
         {
-            return new UnifiedOrder(_requester, _checkSignature, _generateReport);
+            return new UnifiedOrder(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -59,7 +63,7 @@ namespace Weixin.Next.Pay
         /// <returns></returns>
         public OrderQuery OrderQuery()
         {
-            return new OrderQuery(_requester, _checkSignature, _generateReport);
+            return new OrderQuery(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -68,7 +72,7 @@ namespace Weixin.Next.Pay
         /// <returns></returns>
         public CloseOrder CloseOrder()
         {
-            return new CloseOrder(_requester, _checkSignature, _generateReport);
+            return new CloseOrder(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -77,7 +81,7 @@ namespace Weixin.Next.Pay
         /// <returns></returns>
         public Refund Refund()
         {
-            return new Refund(_requester, _checkSignature, _generateReport);
+            return new Refund(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -86,7 +90,7 @@ namespace Weixin.Next.Pay
         /// <returns></returns>
         public RefundQuery RefundQuery()
         {
-            return new RefundQuery(_requester, _checkSignature, _generateReport);
+            return new RefundQuery(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -95,7 +99,7 @@ namespace Weixin.Next.Pay
         /// <returns></returns>
         public DownloadBill DownloadBill()
         {
-            return new DownloadBill(_requester, _checkSignature);
+            return new DownloadBill(_requester, _checkSignature, _sandbox);
         }
 
         /// <summary>
@@ -137,7 +141,7 @@ namespace Weixin.Next.Pay
         /// <returns></returns>
         public ShortUrl ShortUrl()
         {
-            return new ShortUrl(_requester, _checkSignature, _generateReport);
+            return new ShortUrl(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -146,7 +150,7 @@ namespace Weixin.Next.Pay
         /// <returns></returns>
         public AuthCodeToOpenId AuthCodeToOpenId()
         {
-            return new AuthCodeToOpenId(_requester, _checkSignature, _generateReport);
+            return new AuthCodeToOpenId(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -155,7 +159,7 @@ namespace Weixin.Next.Pay
         /// <returns></returns>
         public MicroPay MicroPay()
         {
-            return new MicroPay(_requester, _checkSignature, _generateReport);
+            return new MicroPay(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -164,7 +168,7 @@ namespace Weixin.Next.Pay
         /// <returns></returns>
         public Transfer Transfer()
         {
-            return new Transfer(_requester, _checkSignature, _generateReport);
+            return new Transfer(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -173,7 +177,7 @@ namespace Weixin.Next.Pay
         /// <returns></returns>
         public GetTransferInfo GetTransferInfo()
         {
-            return new GetTransferInfo(_requester, _checkSignature, _generateReport);
+            return new GetTransferInfo(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -181,7 +185,7 @@ namespace Weixin.Next.Pay
         /// </summary>
         public SendCoupon SendCoupon()
         {
-            return new SendCoupon(_requester, _checkSignature, _generateReport);
+            return new SendCoupon(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -189,7 +193,7 @@ namespace Weixin.Next.Pay
         /// </summary>
         public QueryCouponStock QueryCouponStock()
         {
-            return new QueryCouponStock(_requester, _checkSignature, _generateReport);
+            return new QueryCouponStock(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -197,7 +201,7 @@ namespace Weixin.Next.Pay
         /// </summary>
         public QueryCouponsInfo QueryCouponsInfo()
         {
-            return new QueryCouponsInfo(_requester, _checkSignature, _generateReport);
+            return new QueryCouponsInfo(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -205,7 +209,7 @@ namespace Weixin.Next.Pay
         /// </summary>
         public SendRedPack SendRedPack()
         {
-            return new SendRedPack(_requester, _checkSignature, _generateReport);
+            return new SendRedPack(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -214,7 +218,7 @@ namespace Weixin.Next.Pay
         /// <returns></returns>
         public SendGroupRedPack SendGroupRedPack()
         {
-            return new SendGroupRedPack(_requester, _checkSignature, _generateReport);
+            return new SendGroupRedPack(_requester, _checkSignature, _sandbox, _generateReport);
         }
 
         /// <summary>
@@ -222,7 +226,7 @@ namespace Weixin.Next.Pay
         /// </summary>
         public GetHBInfo GetHBInfo()
         {
-            return new GetHBInfo(_requester, _checkSignature, _generateReport);
+            return new GetHBInfo(_requester, _checkSignature, _sandbox, _generateReport);
         }
     }
 }
