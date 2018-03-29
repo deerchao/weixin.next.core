@@ -33,6 +33,7 @@ namespace Weixin.Next.Pay
             interface_url = ApiRootUrl + "mmpaymkttransfers/gethbinfo";
             requiresCert = true;
         }
+
         public class Outcoming : OutcomingData
         {
             /// <summary>

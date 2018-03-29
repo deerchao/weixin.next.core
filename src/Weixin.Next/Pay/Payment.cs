@@ -18,7 +18,7 @@ namespace Weixin.Next.Pay
         private readonly bool _generateReport;
 
         /// <summary>
-        /// 创建微信支付接口主入口对象
+        /// 创建微信支付接口主入口对象（普通商户版）
         /// </summary>
         /// <param name="appid">微信 appid</param>
         /// <param name="mch_id">微信支付商户 id</param>
@@ -30,6 +30,24 @@ namespace Weixin.Next.Pay
         /// <param name="jsonParser">用于序列化/反序列化下单接口中的 detail 字段</param>
         public Payment(string appid, string mch_id, string key, X509Certificate2 cert, bool checkSignature, bool sandbox, bool generateReport, IJsonParser jsonParser)
             : this(new Requester(appid, mch_id, key, cert, jsonParser), checkSignature, sandbox, generateReport)
+        {
+        }
+
+        /// <summary>
+        /// 创建微信支付接口主入口对象（服务商版）
+        /// </summary>
+        /// <param name="appid">微信 appid</param>
+        /// <param name="mch_id">微信支付商户 id</param>
+        /// <param name="sub_appid">子商户公众账号ID</param>
+        /// <param name="sub_mch_id">子商户号 id</param>
+        /// <param name="key">签名 key</param>
+        /// <param name="cert">微信支付安全证书</param>
+        /// <param name="checkSignature">发送请求时是否检查服务器返回数据的签名</param>
+        /// <param name="sandbox">是否使用微信支付沙盒环境</param>
+        /// <param name="generateReport">发送请求时是否生成报告, 准备发送</param>
+        /// <param name="jsonParser">用于序列化/反序列化下单接口中的 detail 字段</param>
+        public Payment(string appid, string mch_id, string sub_appid, string sub_mch_id, string key, X509Certificate2 cert, bool checkSignature, bool sandbox, bool generateReport, IJsonParser jsonParser)
+            : this(new ServiceProviderRequester(appid, mch_id, sub_appid, sub_mch_id, key, cert, jsonParser), checkSignature, sandbox, generateReport)
         {
         }
 

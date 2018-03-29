@@ -131,6 +131,14 @@ namespace Weixin.Next.Pay
             /// </summary>
             public string mch_id { get; set; }
             /// <summary>
+            /// 微信分配的子商户公众账号ID, 仅在服务商账号调用且return_code为SUCCESS的时候有意义
+            /// </summary>
+            public string sub_appid { get; set; }
+            /// <summary>
+            /// 微信支付分配的子商户号, 仅在服务商账号调用且return_code为SUCCESS的时候有意义
+            /// </summary>
+            public string sub_mch_id { get; set; }
+            /// <summary>
             /// 调用接口提交的终端设备号, 仅在return_code为SUCCESS的时候有意义
             /// </summary>
             public string device_info { get; set; }
@@ -152,6 +160,8 @@ namespace Weixin.Next.Pay
             {
                 appid = GetValue(values, "appid");
                 mch_id = GetValue(values, "mch_id");
+                sub_appid = GetValue(values, "sub_appid");
+                sub_mch_id = GetValue(values, "sub_mch_id");
                 device_info = GetValue(values, "device_info");
             }
 
