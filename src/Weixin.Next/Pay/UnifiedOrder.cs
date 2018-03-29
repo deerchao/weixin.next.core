@@ -160,6 +160,10 @@ namespace Weixin.Next.Pay
             /// trade_type=NATIVE 时才有意义，可将该参数值生成二维码展示出来进行扫码支付
             /// </summary>
             public string code_url { get; set; }
+            /// <summary>
+            /// trade_type=MWEB 时才有意义，将用户导向该url来拉起微信客户端，完成支付, mweb_url的有效期为5分钟。可在后边拼接上redirect_url参数，来指定回调页面。
+            /// </summary>
+            public string mweb_url { get; set; }
 
             protected override void DeserializeFields(List<KeyValuePair<string, string>> values, IJsonParser jsonParser, XElement xml)
             {
@@ -175,6 +179,7 @@ namespace Weixin.Next.Pay
                 trade_type = (TradeType)Enum.Parse(typeof(TradeType), GetValue(values, "trade_type"));
                 prepay_id = GetValue(values, "prepay_id");
                 code_url = GetValue(values, "code_url");
+                mweb_url = GetValue(values, "mweb_url");
             }
         }
 

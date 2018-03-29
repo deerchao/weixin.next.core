@@ -332,7 +332,11 @@ namespace Weixin.Next.Pay
         /// <summary>
         /// 刷卡支付(刷卡支付有单独的支付接口，不调用统一下单接口): 用户展示微信钱包内的“刷卡条码/二维码”给商户系统扫描后直接完成支付的模式。主要应用线下面对面收银的场景。
         /// </summary>
-        MICROPAY
+        MICROPAY,
+        /// <summary>
+        /// 手机H5支付：在微信客户端外的移动端网页展示商品或服务，用户在前述页面确认使用微信支付时，商户发起本服务呼起微信客户端进行支付。
+        /// </summary>
+        MWEB,
     }
 
     public enum PayLimitation
