@@ -256,6 +256,10 @@ namespace Weixin.Next.Pay
             /// </summary>
             FAIL,
             /// <summary>
+            /// 退款关闭
+            /// </summary>
+            REFUNDCLOSE,
+            /// <summary>
             /// 退款处理中 
             /// </summary>
             PROCESSING,

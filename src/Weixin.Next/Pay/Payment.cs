@@ -66,6 +66,29 @@ namespace Weixin.Next.Pay
             _generateReport = generateReport;
         }
 
+
+        /// <summary>
+        /// 生成 JSAPI 支付调起参数
+        /// </summary>
+        public JsapiPayRequest CreateJsapiRequest(UnifiedOrder.Incoming incoming, bool isSubApp = false)
+        {
+            return JsapiPayRequest.Create(
+                isSubApp
+                    ? incoming.sub_appid
+                    : incoming.appid,
+                incoming.prepay_id)
+                .PouplateSign(_requester);
+        }
+
+        /// <summary>
+        /// 生成 JSAPI 支付调起参数
+        /// </summary>
+        public JsapiPayRequest CreateJsapiRequest(string appId, string prepayId)
+        {
+            return JsapiPayRequest.Create(appId, prepayId).PouplateSign(_requester);
+        }
+
+
         /// <summary>
         /// 统一下单
         /// </summary>

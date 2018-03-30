@@ -36,7 +36,9 @@ namespace Weixin.Next.Pay
         private string BuildRequestBody(OutcomingData data)
         {
             var nonce = _random.Next().ToString("D");
-            var items = data.GetFields(_jsonParser).Concat(GetCommonOutcomingFields(data)).Where(x => !string.IsNullOrEmpty(x.Value))
+            var items = data.GetFields(_jsonParser)
+                .Concat(GetCommonOutcomingFields(data))
+                .Where(x => !string.IsNullOrEmpty(x.Value))
                 .ToList();
 
             items.Add(new KeyValuePair<string, string>("sign", ComputeSign(items)));
@@ -54,9 +56,11 @@ namespace Weixin.Next.Pay
             yield return new KeyValuePair<string, string>("nonce_str", nonce);
         }
 
-        private string ComputeSign(List<KeyValuePair<string, string>> items)
+        public string ComputeSign(IEnumerable<KeyValuePair<string, string>> items)
         {
-            var stringA = string.Join("&", items.Where(x => x.Key != "sign").OrderBy(x => x.Key).Select(x => $"{x.Key}={x.Value}"));
+            var stringA = string.Join("&", items.Where(x => x.Key != "sign")
+                .OrderBy(x => x.Key)
+                .Select(x => $"{x.Key}={x.Value}"));
             var stringSignTemp = stringA + "&key=" + _key;
             var sign = string.Concat(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(stringSignTemp))
                 .Select(x => x.ToString("X2")));

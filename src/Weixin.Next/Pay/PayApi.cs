@@ -124,6 +124,22 @@ namespace Weixin.Next.Pay
                 ? (int?)null
                 : int.Parse(v);
         }
+
+        /// <summary>
+        /// 通信是否成功
+        /// </summary>
+        public bool IsSuccessReturn()
+        {
+            return return_code == return_success;
+        }
+
+        /// <summary>
+        /// 调用是否成功
+        /// </summary>
+        public bool IsSuccessResult()
+        {
+            return result_code == result_success;
+        }
     }
 
     internal static class Stage
