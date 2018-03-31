@@ -47,7 +47,7 @@ namespace Weixin.Next.Pay
         /// <param name="generateReport">发送请求时是否生成报告, 准备发送</param>
         /// <param name="jsonParser">用于序列化/反序列化下单接口中的 detail 字段</param>
         public Payment(string appid, string mch_id, string sub_appid, string sub_mch_id, string key, X509Certificate2 cert, bool checkSignature, bool sandbox, bool generateReport, IJsonParser jsonParser)
-            : this(new ServiceProviderRequester(appid, mch_id, sub_appid, sub_mch_id, key, cert, jsonParser), checkSignature, sandbox, generateReport)
+            : this(new Requester(appid, mch_id, sub_appid, sub_mch_id, key, cert, jsonParser), checkSignature, sandbox, generateReport)
         {
         }
 

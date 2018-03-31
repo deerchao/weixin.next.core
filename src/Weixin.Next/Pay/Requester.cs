@@ -20,18 +20,29 @@ namespace Weixin.Next.Pay
         private static readonly Random _random = new Random();
         private readonly string _appid;
         private readonly string _mch_id;
+        private readonly string _sub_appid;
+        private readonly string _sub_mch_id;
         private readonly string _key;
         private readonly X509Certificate2 _cert;
         private readonly IJsonParser _jsonParser;
 
+
         public Requester(string appid, string mch_id, string key, X509Certificate2 cert, IJsonParser jsonParser)
+            : this(appid, mch_id, null, null, key, cert, jsonParser)
+        {
+        }
+
+        public Requester(string appid, string mch_id, string sub_appid, string sub_mch_id, string key, X509Certificate2 cert, IJsonParser jsonParser)
         {
             _appid = appid;
             _mch_id = mch_id;
+            _sub_appid = sub_appid;
+            _sub_mch_id = sub_mch_id;
             _key = key;
             _cert = cert;
             _jsonParser = jsonParser;
         }
+
 
         private string BuildRequestBody(OutcomingData data)
         {
@@ -47,10 +58,12 @@ namespace Weixin.Next.Pay
             return xml.ToString(SaveOptions.DisableFormatting);
         }
 
-        protected virtual IEnumerable<KeyValuePair<string, string>> GetCommonOutcomingFields(OutcomingData data)
+        private IEnumerable<KeyValuePair<string, string>> GetCommonOutcomingFields(OutcomingData data)
         {
             yield return new KeyValuePair<string, string>(data.AppIdFieldName, _appid);
             yield return new KeyValuePair<string, string>(data.MerchantIdFieldName, _mch_id);
+            yield return new KeyValuePair<string, string>(data.SubAppIdFieldName, _sub_appid);
+            yield return new KeyValuePair<string, string>(data.SubMerchantIdFieldName, _sub_mch_id);
 
             var nonce = _random.Next().ToString("D");
             yield return new KeyValuePair<string, string>("nonce_str", nonce);
@@ -123,28 +136,6 @@ namespace Weixin.Next.Pay
         protected virtual HttpClient CreateHttpClient(HttpMessageHandler handler)
         {
             return new HttpClient(handler);
-        }
-    }
-
-    public class ServiceProviderRequester : Requester
-    {
-        private readonly string _sub_appid;
-        private readonly string _sub_mch_id;
-
-        public ServiceProviderRequester(string appid, string mch_id, string sub_app_id, string sub_mch_id, string key, X509Certificate2 cert, IJsonParser jsonParser)
-            : base(appid, mch_id, key, cert, jsonParser)
-        {
-            _sub_appid = sub_app_id;
-            _sub_mch_id = sub_mch_id;
-        }
-
-        protected override IEnumerable<KeyValuePair<string, string>> GetCommonOutcomingFields(OutcomingData data)
-        {
-            foreach (var item in base.GetCommonOutcomingFields(data))
-                yield return item;
-
-            yield return new KeyValuePair<string, string>(data.SubAppIdFieldName, _sub_appid);
-            yield return new KeyValuePair<string, string>(data.SubMerchantIdFieldName, _sub_mch_id);
         }
     }
 }

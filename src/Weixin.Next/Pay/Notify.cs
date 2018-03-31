@@ -30,6 +30,24 @@ namespace Weixin.Next.Pay
                         new XElement("return_msg", return_msg))
                     .ToString();
             }
+
+
+            public static Outcoming Success()
+            {
+                return new Outcoming
+                {
+                    return_code = "SUCCESS",
+                };
+            }
+
+            public static Outcoming Fail(string message)
+            {
+                return new Outcoming
+                {
+                    return_code = "FAIL",
+                    return_msg = message,
+                };
+            }
         }
     }
 }
