@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using Weixin.Next.Common;
 
 namespace Weixin.Next.MP.Api
 {

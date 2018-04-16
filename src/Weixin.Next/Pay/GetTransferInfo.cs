@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Weixin.Next.MP.Api;
+using Weixin.Next.Common;
 
 namespace Weixin.Next.Pay
 {

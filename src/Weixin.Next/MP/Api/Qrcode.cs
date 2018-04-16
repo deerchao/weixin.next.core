@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Weixin.Next.Common;
 
 namespace Weixin.Next.MP.Api
 {

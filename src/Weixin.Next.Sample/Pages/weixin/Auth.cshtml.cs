@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using Weixin.Next.Common;
 using Weixin.Next.MP.Api;
 using Weixin.Next.Sample.Models;
 

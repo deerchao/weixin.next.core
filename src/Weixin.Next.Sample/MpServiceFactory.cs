@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
+using Weixin.Next.Common;
 using Weixin.Next.Json.Net;
 using Weixin.Next.MP.Api;
 using Weixin.Next.MP.Messaging;

@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using Weixin.Next.MP.Api;
+using Weixin.Next.Common;
 
 namespace Weixin.Next.Json.Net
 {

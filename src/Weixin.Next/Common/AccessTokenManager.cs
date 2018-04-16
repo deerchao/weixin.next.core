@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Weixin.Next.MP.Api
+namespace Weixin.Next.Common
 {
     public interface IAccessTokenManager
     {
@@ -167,40 +167,6 @@ namespace Weixin.Next.MP.Api
         protected abstract Task<AccessTokenInfo> Refresh(string oldToken);
     }
 
-    /// <summary>
-    /// 用于缓存并过期时刷新 access_token
-    /// </summary>
-    public class AccessTokenManager : AccessTokenManagerBase
-    {
-        private readonly string _appId;
-        private readonly string _appSecret;
-
-
-        public AccessTokenManager(string appId, string appSecret)
-        {
-            _appId = appId;
-            _appSecret = appSecret;
-        }
-
-        public ApiConfig Config { get; set; }
-
-        protected override async Task<AccessTokenInfo> Get()
-        {
-            //由于不是与自己的全局缓存服务器通信, 我们只能直接从微信服务器刷新
-            var result = await Token.Get(_appId, _appSecret, Config);
-            return new AccessTokenInfo
-            {
-                Token = result.access_token,
-                //提前 10 秒到期
-                ExpireTime = DateTime.UtcNow.AddSeconds(result.expires_in - 10).Ticks,
-            };
-        }
-
-        protected override Task<AccessTokenInfo> Refresh(string oldToken)
-        {
-            return Get();
-        }
-    }
 
     /// <summary>
     /// 从中控服务器(全局缓存)中获取 access_token
@@ -248,5 +214,40 @@ namespace Weixin.Next.MP.Api
         /// <param name="oldToken">已过期的旧 access_token, 如果未知是否过期则为 null</param>
         /// <returns></returns>
         protected abstract HttpRequestMessage GetRequest(bool refresh, string oldToken);
+    }
+
+    /// <summary>
+    /// 用于缓存并过期时刷新 access_token
+    /// </summary>
+    public class AccessTokenManager : AccessTokenManagerBase
+    {
+        private readonly string _appId;
+        private readonly string _appSecret;
+
+
+        public AccessTokenManager(string appId, string appSecret)
+        {
+            _appId = appId;
+            _appSecret = appSecret;
+        }
+
+        public ApiConfig Config { get; set; }
+
+        protected override async Task<AccessTokenInfo> Get()
+        {
+            //由于不是与自己的全局缓存服务器通信, 我们只能直接从微信服务器刷新
+            var result = await Token.Get(_appId, _appSecret, Config);
+            return new AccessTokenInfo
+            {
+                Token = result.access_token,
+                //提前 10 秒到期
+                ExpireTime = DateTime.UtcNow.AddSeconds(result.expires_in - 10).Ticks,
+            };
+        }
+
+        protected override Task<AccessTokenInfo> Refresh(string oldToken)
+        {
+            return Get();
+        }
     }
 }

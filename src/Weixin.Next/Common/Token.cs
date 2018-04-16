@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Weixin.Next.Common;
 
-namespace Weixin.Next.MP.Api
+namespace Weixin.Next.Common
 {
     // ReSharper disable InconsistentNaming
     /// <summary>

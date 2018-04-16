@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Weixin.Next.MP.Api
+namespace Weixin.Next.Common
 {
     /// <summary>
     /// 代表微信服务返回的错误信息

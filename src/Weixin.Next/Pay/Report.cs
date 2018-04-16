@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Weixin.Next.MP.Api;
+using Weixin.Next.Common;
 
 namespace Weixin.Next.Pay
 {

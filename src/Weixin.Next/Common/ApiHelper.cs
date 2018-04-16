@@ -4,9 +4,10 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Weixin.Next.Common;
 using Weixin.Next.Utilities;
 
-namespace Weixin.Next.MP.Api
+namespace Weixin.Next.Common
 {
     public static class ApiHelper
     {

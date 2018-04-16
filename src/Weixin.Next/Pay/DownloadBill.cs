@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Weixin.Next.MP.Api;
+using Weixin.Next.Common;
 using Weixin.Next.Utilities;
 
 namespace Weixin.Next.Pay

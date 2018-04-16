@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Weixin.Next.MP.Api;
+using Weixin.Next.Common;
 
 namespace Weixin.Next.Pay
 {
@@ -119,11 +120,24 @@ namespace Weixin.Next.Pay
             var requestBody = BuildRequestBody(data);
             var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = new StringContent(requestBody, Encoding.UTF8) };
 
-            HttpClientHandler handler = null;
+            HttpClientHandler handler;
             if (requiresClientCert)
             {
-                handler = new HttpClientHandler { ClientCertificateOptions = ClientCertificateOption.Manual };
+                handler = new HttpClientHandler
+                {
+                    ClientCertificateOptions = ClientCertificateOption.Manual,
+                    AutomaticDecompression = DecompressionMethods.Deflate |
+                                             DecompressionMethods.GZip,
+                };
                 handler.ClientCertificates.Add(_cert);
+            }
+            else
+            {
+                handler = new HttpClientHandler
+                {
+                    AutomaticDecompression = DecompressionMethods.Deflate |
+                                             DecompressionMethods.GZip,
+                };
             }
 
             var http = CreateHttpClient(handler);

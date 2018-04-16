@@ -1,4 +1,4 @@
-﻿namespace Weixin.Next.MP.Api
+﻿namespace Weixin.Next.Common
 {
     public interface IJsonParser
     {

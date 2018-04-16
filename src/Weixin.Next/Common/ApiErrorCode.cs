@@ -1,4 +1,4 @@
-﻿namespace Weixin.Next.MP.Api
+﻿namespace Weixin.Next.Common
 {
     /// <summary>
     /// 微信接口返回结果中的 errcode 值
