@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Weixin.Next.Common;
 using Weixin.Next.Utilities;
@@ -49,9 +50,66 @@ namespace Weixin.Next.Common
         /// <param name="url">网址</param>
         /// <param name="config"></param>
         /// <returns></returns>
-        public static Task<Stream> GetStream(string url, ApiConfig config = null)
+        public static async Task<Stream> GetStream(string url, ApiConfig config = null)
         {
-            return GetStreamWithToken(url, config, null);
+            var token = new AsyncOutParameter<string>();
+            var ms = new MemoryStream();
+            try
+            {
+                using (var s = await GetStreamWithToken(url, config, token).ConfigureAwait(false))
+                {
+                    await s.CopyToAsync(ms).ConfigureAwait(false);
+
+                    //估计错误消息应该不会大于400字节
+                    if (ms.Length < 400)
+                    {
+                        var buffer = ms.ToArray();
+                        var text = Encoding.UTF8.GetString(buffer);
+
+                        if (Regex.IsMatch(text, @"^\s*{"))
+                        {
+                            //如果是失败消息, 这里会抛出异常
+                            BuildVoid(text, config);
+                        }
+                    }
+
+                    ms.Position = 0;
+                    return ms;
+                }
+            }
+            catch (ApiException ex)
+            {
+                if (ex.Code == ErrorAccessTokenExpired || ex.Code == ErrorAccessTokenInvalid)
+                {
+                    ms.SetLength(0);
+
+                    var m = config?.AccessTokenManager ?? _defaultConfig.AccessTokenManager;
+                    await m.RefreshTokenInfo(token.Value).ConfigureAwait(false);
+
+                    using (var s = await GetStreamWithToken(url, config, null).ConfigureAwait(false))
+                    {
+                        await s.CopyToAsync(ms).ConfigureAwait(false);
+
+                        //估计错误消息应该不会大于400字节
+                        if (ms.Length < 400)
+                        {
+                            var buffer = ms.ToArray();
+                            var text = Encoding.UTF8.GetString(buffer);
+
+                            if (Regex.IsMatch(text, @"^\s*{"))
+                            {
+                                //如果是失败消息, 这里会抛出异常
+                                BuildVoid(text, config);
+                            }
+                        }
+
+                        ms.Position = 0;
+                        return ms;
+                    }
+                }
+
+                throw;
+            }
         }
 
         private static async Task<Stream> GetStreamWithToken(string url, ApiConfig config, AsyncOutParameter<string> token)

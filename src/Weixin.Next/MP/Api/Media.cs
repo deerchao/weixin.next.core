@@ -67,26 +67,9 @@ namespace Weixin.Next.MP.Api
         /// <param name="media_id">媒体文件ID</param>
         /// <param name="config"></param>
         /// <returns></returns>
-        public static async Task<Stream> Get(string media_id, ApiConfig config = null)
+        public static Task<Stream> Get(string media_id, ApiConfig config = null)
         {
-            using (var s = await ApiHelper.GetStream($"https://api.weixin.qq.com/cgi-bin/media/get?$acac$&media_id={Uri.EscapeDataString(media_id)}", config).ConfigureAwait(false))
-            {
-                var ms = new MemoryStream();
-                await s.CopyToAsync(ms).ConfigureAwait(false);
-
-                //估计错误消息应该不会大于400字节
-                if (ms.Length < 400)
-                {
-                    var buffer = ms.ToArray();
-                    var text = Encoding.UTF8.GetString(buffer);
-
-                    //如果是失败消息, 这里会抛出异常
-                    ApiHelper.BuildVoid(text, config);
-                }
-
-                ms.Position = 0;
-                return ms;
-            }
+            return ApiHelper.GetStream($"https://api.weixin.qq.com/cgi-bin/media/get?$acac$&media_id={Uri.EscapeDataString(media_id)}", config);
         }
     }
 }
