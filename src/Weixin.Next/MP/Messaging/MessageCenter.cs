@@ -47,65 +47,75 @@ namespace Weixin.Next.MP.Messaging
 
             var key = requestMessage.GetDuplicationKey();
 
+            ResponseSource source;
+
             // 如果是正在处理中的重复消息, 则返回等待处理完成返回处理结果
-            var responseText = await GetResponseFromExecution(urlParameters, key).ConfigureAwait(false);
-            if (responseText != null)
+            var responseMessage = await GetResponseFromExecution(urlParameters, key).ConfigureAwait(false);
+            if (responseMessage != null)
             {
-                OnResponseGenerated(responseText, ResponseSource.Executing);
-                return responseText;
+                source = ResponseSource.Executing;
+            }
+            else
+            {
+                // 如果是已处理的重复消息, 则直接返回待处理结果
+                responseMessage = await GetResponseFromCache(key).ConfigureAwait(false);
+                if (responseMessage != null)
+                {
+                    source = ResponseSource.Cache;
+                }
+                else
+                {
+                    var handler = CreateHandler();
+                    var task = handler.Handle(requestMessage);
+
+                    // 开始处理后, 保存正在处理的消息
+                    var done = task.IsCompleted;
+                    if (!done)
+                    {
+                        _executionDictionary.Add(key, task);
+                    }
+
+                    responseMessage = await task.ConfigureAwait(false);
+
+                    // 处理完成后, 从正在处理转移到处理完成
+                    await _responseCache.Add(key, responseMessage).ConfigureAwait(false);
+                    if (!done)
+                    {
+                        _executionDictionary.Remove(key);
+                    }
+
+                    source = ResponseSource.New;
+                }
             }
 
-            // 如果是已处理的重复消息, 则直接返回待处理结果
-            responseText = await GetResponseFromCache(key);
-            if (responseText != null)
+            var responseText = responseMessage.Serialize();
+            OnResponseGenerated(responseText, source);
+
+            if (responseMessage.EncryptionRequired)
             {
-                OnResponseGenerated(responseText, ResponseSource.Cache);
-                return responseText;
+                responseText = EncryptResponse(urlParameters, responseText);
             }
 
-            var handler = CreateHandler();
-            var task = handler.Handle(requestMessage);
-
-            // 开始处理后, 保存正在处理的消息
-            var done = task.IsCompleted;
-            if (!done)
-            {
-                _executionDictionary.Add(key, task);
-            }
-
-            var responseMessage = await task.ConfigureAwait(false);
-            responseText = SerializeResponse(urlParameters, responseMessage);
-
-            // 处理完成后, 从正在处理转移到处理完成
-            await _responseCache.Add(key, responseText).ConfigureAwait(false);
-            if (!done)
-            {
-                _executionDictionary.Remove(key);
-            }
-
-            OnResponseGenerated(responseText, ResponseSource.New);
             return responseText;
         }
 
-        private async Task<string> GetResponseFromExecution(PostUrlParameters urlParameters, string key)
+        private async Task<IResponseMessage> GetResponseFromExecution(PostUrlParameters urlParameters, string key)
         {
             var executionTask = _executionDictionary.Get(key, false);
             if (executionTask != null)
             {
-                var responseMessage = await executionTask.ConfigureAwait(false);
-                return SerializeResponse(urlParameters, responseMessage);
+                return await executionTask.ConfigureAwait(false);
             }
 
             return null;
         }
 
-        private async Task<string> GetResponseFromCache(string key)
+        private async Task<IResponseMessage> GetResponseFromCache(string key)
         {
             var cacheTask = _responseCache.Get(key, false);
             if (cacheTask != null)
             {
-                var responseText = await cacheTask.ConfigureAwait(false);
-                return responseText;
+                return await cacheTask.ConfigureAwait(false);
             }
             return null;
         }
@@ -128,17 +138,13 @@ namespace Weixin.Next.MP.Messaging
             return RequestMessage.Parse(request);
         }
 
-        private string SerializeResponse(PostUrlParameters urlParameters, IResponseMessage responseMessage)
+        private string EncryptResponse(PostUrlParameters urlParameters, string responseText)
         {
-            var response = responseMessage.Serialize();
-            if (!responseMessage.EncryptionRequired)
-                return response;
-
-            var outputData = response;
+            var outputData = responseText;
 
             if (_cryptor != null)
             {
-                var encryptResult = _cryptor.EncryptMsg(response, urlParameters.timestamp, urlParameters.nonce, ref outputData);
+                var encryptResult = _cryptor.EncryptMsg(responseText, urlParameters.timestamp, urlParameters.nonce, ref outputData);
                 if (encryptResult != WXBizMsgCrypt.WXBizMsgCryptErrorCode.WXBizMsgCrypt_OK)
                     throw new MessageException($"加密失败: {encryptResult}");
             }

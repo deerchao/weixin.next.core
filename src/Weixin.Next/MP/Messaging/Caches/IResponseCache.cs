@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Weixin.Next.MP.Messaging.Responses;
 
 namespace Weixin.Next.MP.Messaging.Caches
 {
@@ -10,9 +11,9 @@ namespace Weixin.Next.MP.Messaging.Caches
     /// </summary>
     public interface IResponseCache
     {
-        Task Add(string key, string response);
+        Task Add(string key, IResponseMessage response);
 
-        Task<string> Get(string key, bool remove);
+        Task<IResponseMessage> Get(string key, bool remove);
 
         Task Remove(string key);
     }
@@ -22,14 +23,14 @@ namespace Weixin.Next.MP.Messaging.Caches
     /// </summary>
     public class NullResponseCache : IResponseCache
     {
-        private static readonly Task<string> _nullTask = Task.FromResult((string)null);
+        private static readonly Task<IResponseMessage> _nullTask = Task.FromResult((IResponseMessage)null);
 
-        public Task Add(string key, string response)
+        public Task Add(string key, IResponseMessage response)
         {
             return _nullTask;
         }
 
-        public Task<string> Get(string key, bool remove)
+        public Task<IResponseMessage> Get(string key, bool remove)
         {
             return _nullTask;
         }
@@ -42,10 +43,10 @@ namespace Weixin.Next.MP.Messaging.Caches
 
     public sealed class ResponseCache : IResponseCache, IDisposable
     {
-        private static readonly Task<string> _nullTask = Task.FromResult((string)null);
+        private static readonly Task<IResponseMessage> _nullTask = Task.FromResult((IResponseMessage)null);
 
-        private Dictionary<string, string> _workingDict = new Dictionary<string, string>();
-        private Dictionary<string, string> _backupDict = new Dictionary<string, string>();
+        private Dictionary<string, IResponseMessage> _workingDict = new Dictionary<string, IResponseMessage>();
+        private Dictionary<string, IResponseMessage> _backupDict = new Dictionary<string, IResponseMessage>();
 
         private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
         private readonly Timer _exchangeTimer;
@@ -55,7 +56,7 @@ namespace Weixin.Next.MP.Messaging.Caches
             _exchangeTimer = new Timer(state => ClearOldData(), null, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(15));
         }
 
-        public Task Add(string key, string response)
+        public Task Add(string key, IResponseMessage response)
         {
             _lock.EnterWriteLock();
 
@@ -72,9 +73,9 @@ namespace Weixin.Next.MP.Messaging.Caches
             return _nullTask;
         }
 
-        public Task<string> Get(string key, bool remove)
+        public Task<IResponseMessage> Get(string key, bool remove)
         {
-            string result;
+            IResponseMessage result;
             if (remove)
             {
                 _lock.EnterWriteLock();
