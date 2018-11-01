@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Weixin.Next.MP.Messaging.Caches;
@@ -66,16 +67,27 @@ namespace Weixin.Next.MP.Messaging
                 else
                 {
                     var handler = CreateHandler();
-                    var task = handler.Handle(requestMessage);
-
-                    // 开始处理后, 保存正在处理的消息
-                    var done = task.IsCompleted;
-                    if (!done)
+                    bool done = false;
+                    try
                     {
-                        _executionDictionary.Add(key, task);
-                    }
+                        var task = handler.Handle(requestMessage);
 
-                    responseMessage = await task.ConfigureAwait(false);
+                        // 开始处理后, 保存正在处理的消息
+                        done = task.IsCompleted;
+                        if (!done)
+                        {
+                            _executionDictionary.Add(key, task);
+                        }
+
+                        responseMessage = await task.ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        if(handler is IDisposable d)
+                        {
+                            d.Dispose();
+                        }
+                    }
 
                     // 处理完成后, 从正在处理转移到处理完成
                     await _responseCache.Add(key, responseMessage).ConfigureAwait(false);
