@@ -278,11 +278,11 @@ namespace Weixin.Next.MP.Messaging.Requests
         /// <summary>
         /// 地理位置纬度
         /// </summary>
-        public double Location_X { get { return double.Parse(_xml.Element("Location_X").Value); } }
+        public decimal Location_X { get { return decimal.Parse(_xml.Element("Location_X").Value); } }
         /// <summary>
         /// 地理位置经度
         /// </summary>
-        public double Location_Y { get { return double.Parse(_xml.Element("Location_Y").Value); } }
+        public decimal Location_Y { get { return decimal.Parse(_xml.Element("Location_Y").Value); } }
         /// <summary>
         /// 地图缩放大小
         /// </summary>

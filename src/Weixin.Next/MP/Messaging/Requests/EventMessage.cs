@@ -265,17 +265,17 @@ namespace Weixin.Next.MP.Messaging.Requests
         /// <summary>
         /// 地理位置纬度
         /// </summary>
-        public double Latitude { get { return double.Parse(_xml.Element("Latitude").Value); } }
+        public decimal Latitude { get { return decimal.Parse(_xml.Element("Latitude").Value); } }
 
         /// <summary>
         /// 地理位置经度
         /// </summary>
-        public double Longitude { get { return double.Parse(_xml.Element("Longitude").Value); } }
+        public decimal Longitude { get { return decimal.Parse(_xml.Element("Longitude").Value); } }
 
         /// <summary>
         /// 地理位置精度
         /// </summary>
-        public double Precision { get { return double.Parse(_xml.Element("Precision").Value); } }
+        public decimal Precision { get { return decimal.Parse(_xml.Element("Precision").Value); } }
     }
 
     public class TemplateSendJobFinishEventMessage : EventMessage

@@ -238,12 +238,12 @@ namespace Weixin.Next.MP.Messaging.Requests
         /// <summary>
         /// X坐标信息
         /// </summary>
-        public double Location_X { get { return double.Parse(_element.Element("Location_X").Value); } }
+        public decimal Location_X { get { return decimal.Parse(_element.Element("Location_X").Value); } }
 
         /// <summary>
         /// Y坐标信息
         /// </summary>
-        public double Location_Y { get { return double.Parse(_element.Element("Location_Y").Value); } }
+        public decimal Location_Y { get { return decimal.Parse(_element.Element("Location_Y").Value); } }
 
         /// <summary>
         /// 精度，可理解为精度或者比例尺、越精细的话 scale越高
