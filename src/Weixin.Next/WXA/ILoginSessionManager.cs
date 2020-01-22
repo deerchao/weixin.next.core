@@ -29,7 +29,11 @@ namespace Weixin.Next.WXA
         }
     }
 
-    public interface ILoginSessionManager
+    /// <summary>
+    /// <typeparamref name="TKey" />为主键类型，如 long 或 Guid
+    /// </summary>
+    public interface ILoginSessionManager<TKey>
+        where TKey: struct
     {
         /// <summary>
         /// <para>根据客户端调用 wx.login 的结果，开始一段登录会话</para>
@@ -38,25 +42,25 @@ namespace Weixin.Next.WXA
         /// <param name="code">调用接口 wx.login 获取的临时登录凭证</param>
         /// <returns>刚刚开始的登录会话</returns>
         /// <exception cref="ApiException">使用 code 换取 session 信息时失败</exception>
-        Task<LoginSession> Start(string code);
+        Task<LoginSession<TKey>> Start(string code);
         /// <summary>
         /// 根据会话 id 查找会话对象
         /// </summary>
         /// <param name="id">会话 id</param>
         /// <returns>null, 如果未找到对象; 否则是找到的会话对象</returns>
-        Task<LoginSession> Find(Guid id);
+        Task<LoginSession<TKey>> Find(TKey id);
         /// <summary>
         /// 根据会话 openid 查找会话对象
         /// </summary>
         /// <param name="openid">用户 openid</param>
         /// <returns>null, 如果未找到对象; 否则是找到的会话对象</returns>
-        Task<LoginSession> FindByOpenid(string openid);
+        Task<LoginSession<TKey>> FindByOpenid(string openid);
         /// <summary>
         /// 根据会话 unionid 查找会话对象
         /// </summary>
         /// <param name="unionid">用户 unionid</param>
         /// <returns>null, 如果未找到对象; 否则是找到的会话对象</returns>
-        Task<LoginSession> FindByUnionid(string unionid);
+        Task<LoginSession<TKey>> FindByUnionid(string unionid);
         /// <summary>
         /// 验证微信客户端接口返回数据的签名是否正确
         /// </summary>
@@ -65,7 +69,7 @@ namespace Weixin.Next.WXA
         /// <param name="signature">微信返回的 signature</param>
         /// <returns>true, 如果签名正确；否则 false</returns>
         /// <exception cref="LoginSessionNotFoundException">未找到指定的登录会话</exception>
-        Task<bool> VerifySignature(Guid id, string rawData, string signature);
+        Task<bool> VerifySignature(TKey id, string rawData, string signature);
         /// <summary>
         /// 对微信客户端返回的加密数据进行解密并构造数据对象
         /// </summary>
@@ -76,7 +80,7 @@ namespace Weixin.Next.WXA
         /// <exception cref="LoginSessionNotFoundException">未找到指定的登录会话</exception>
         /// <exception cref="DataDecryptException">数据解密失败</exception>
         /// <exception cref="InvalidWartermakException">非法的数据水印</exception>
-        Task<T> DecryptData<T>(Guid id, string encryptedData, string iv)
+        Task<T> DecryptData<T>(TKey id, string encryptedData, string iv)
             where T : EncryptedData;
     }
 }
