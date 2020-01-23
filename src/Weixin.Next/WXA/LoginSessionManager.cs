@@ -7,20 +7,8 @@ using Weixin.Next.Utilities;
 
 namespace Weixin.Next.WXA
 {
-    /// <summary>
-    /// 小程序登录会话。<typeparamref name="TKey" />为主键类型，如 long 或 Guid
-    /// </summary>
-    public class LoginSession<TKey>
-        where TKey : struct
-    {
-        public TKey Id { get; set; }
-        public string Openid { get; set; }
-        public string Unionid { get; set; }
-        public string SessionKey { get; set; }
-        public DateTime CreateTime { get; set; }
-    }
-
-    public abstract class LoginSessionManagerBase<TKey> : ILoginSessionManager<TKey>
+    public abstract class LoginSessionManagerBase<TSession, TKey> : ILoginSessionManager<TSession, TKey>
+        where TSession : LoginSession<TKey>
         where TKey : struct
     {
         private readonly string _appId;
@@ -39,26 +27,21 @@ namespace Weixin.Next.WXA
         public TimeSpan AllowedTimestampDiff { get; set; } = TimeSpan.FromMinutes(5);
 
 
-        protected abstract Task Save(LoginSession<TKey> session);
+        protected abstract Task Save(TSession session);
 
-        public abstract Task<LoginSession<TKey>> Find(TKey id);
+        public abstract Task<TSession> Find(TKey id);
 
-        public abstract Task<LoginSession<TKey>> FindByOpenid(string openid);
+        public abstract Task<TSession> FindByOpenid(string openid);
 
-        public abstract Task<LoginSession<TKey>> FindByUnionid(string unionid);
+        public abstract Task<TSession> FindByUnionid(string unionid);
 
 
-        public async Task<LoginSession<TKey>> Start(string code)
+        public async Task<TSession> Start(string code)
         {
             var result = await Session.Get(_appId, _appSecret, code, _config).ConfigureAwait(false);
-            var session = new LoginSession<TKey>
-            {
-                Id = GenerateNewId(),
-                CreateTime = DateTime.Now,
-                Openid = result.openid,
-                Unionid = result.unionid,
-                SessionKey = result.session_key,
-            };
+
+            var session = CreateSession(result.openid, result.unionid, result.session_key, DateTime.Now);
+
             await Save(session).ConfigureAwait(false);
 
             return session;
@@ -96,23 +79,24 @@ namespace Weixin.Next.WXA
         }
 
         /// <summary>
-        /// 生成新的 LoginSession Id。可使用 Guid.NewGuid() 或雪花算法等
+        /// 生成新的会话。
         /// </summary>
         /// <returns></returns>
-        protected abstract TKey GenerateNewId();
+        protected abstract TSession CreateSession(string openid, string unionid, string sessionKey, DateTime createTime);
     }
 
     /// <summary>
     /// 使用内存存储的小程序登录会话管理器
     /// </summary>
-    public abstract class LoginSessionManager<TKey> : LoginSessionManagerBase<TKey>
+    public abstract class LoginSessionManager<TSession, TKey> : LoginSessionManagerBase<TSession, TKey>
+        where TSession : LoginSession<TKey>
         where TKey : struct
     {
-        private static readonly Task<LoginSession<TKey>> _null = Task.FromResult<LoginSession<TKey>>(null);
+        private static readonly Task<TSession> _null = Task.FromResult<TSession>(null);
         private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-        private readonly Dictionary<TKey, LoginSession<TKey>> _sessionsById = new Dictionary<TKey, LoginSession<TKey>>();
-        private readonly Dictionary<string, LoginSession<TKey>> _sessionsByOpenid = new Dictionary<string, LoginSession<TKey>>();
-        private readonly Dictionary<string, LoginSession<TKey>> _sessionsByUnionid = new Dictionary<string, LoginSession<TKey>>();
+        private readonly Dictionary<TKey, TSession> _sessionsById = new Dictionary<TKey, TSession>();
+        private readonly Dictionary<string, TSession> _sessionsByOpenid = new Dictionary<string, TSession>();
+        private readonly Dictionary<string, TSession> _sessionsByUnionid = new Dictionary<string, TSession>();
 
         public LoginSessionManager(string appId, string appSecret, ApiConfig config)
             : base(appId, appSecret, config)
@@ -120,11 +104,11 @@ namespace Weixin.Next.WXA
         }
 
 
-        public override Task<LoginSession<TKey>> Find(TKey id)
+        public override Task<TSession> Find(TKey id)
         {
             _lock.EnterReadLock();
 
-            LoginSession<TKey> session;
+            TSession session;
             try
             {
                 _sessionsById.TryGetValue(id, out session);
@@ -139,11 +123,11 @@ namespace Weixin.Next.WXA
                 : Task.FromResult(session);
         }
 
-        public override Task<LoginSession<TKey>> FindByOpenid(string openid)
+        public override Task<TSession> FindByOpenid(string openid)
         {
             _lock.EnterReadLock();
 
-            LoginSession<TKey> session;
+            TSession session;
             try
             {
                 _sessionsByOpenid.TryGetValue(openid, out session);
@@ -158,11 +142,11 @@ namespace Weixin.Next.WXA
                 : Task.FromResult(session);
         }
 
-        public override Task<LoginSession<TKey>> FindByUnionid(string unionid)
+        public override Task<TSession> FindByUnionid(string unionid)
         {
             _lock.EnterReadLock();
 
-            LoginSession<TKey> session;
+            TSession session;
             try
             {
                 _sessionsByUnionid.TryGetValue(unionid, out session);
@@ -177,12 +161,12 @@ namespace Weixin.Next.WXA
                 : Task.FromResult(session);
         }
 
-        protected override Task Save(LoginSession<TKey> session)
+        protected override Task Save(TSession session)
         {
             _lock.EnterWriteLock();
             try
             {
-                if (_sessionsByOpenid.TryGetValue(session.Openid, out LoginSession<TKey> oldSession))
+                if (_sessionsByOpenid.TryGetValue(session.Openid, out TSession oldSession))
                 {
                     _sessionsByOpenid.Remove(oldSession.Openid);
                     _sessionsById.Remove(oldSession.Id);

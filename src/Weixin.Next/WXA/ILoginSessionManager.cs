@@ -30,9 +30,23 @@ namespace Weixin.Next.WXA
     }
 
     /// <summary>
+    /// 小程序登录会话。<typeparamref name="TKey" />为主键类型，如 long 或 Guid
+    /// </summary>
+    public class LoginSession<TKey>
+        where TKey : struct
+    {
+        public TKey Id { get; set; }
+        public string Openid { get; set; }
+        public string Unionid { get; set; }
+        public string SessionKey { get; set; }
+        public DateTime CreateTime { get; set; }
+    }
+
+    /// <summary>
     /// <typeparamref name="TKey" />为主键类型，如 long 或 Guid
     /// </summary>
-    public interface ILoginSessionManager<TKey>
+    public interface ILoginSessionManager<TSession, TKey>
+        where TSession: LoginSession<TKey>
         where TKey: struct
     {
         /// <summary>
@@ -42,25 +56,25 @@ namespace Weixin.Next.WXA
         /// <param name="code">调用接口 wx.login 获取的临时登录凭证</param>
         /// <returns>刚刚开始的登录会话</returns>
         /// <exception cref="ApiException">使用 code 换取 session 信息时失败</exception>
-        Task<LoginSession<TKey>> Start(string code);
+        Task<TSession> Start(string code);
         /// <summary>
         /// 根据会话 id 查找会话对象
         /// </summary>
         /// <param name="id">会话 id</param>
         /// <returns>null, 如果未找到对象; 否则是找到的会话对象</returns>
-        Task<LoginSession<TKey>> Find(TKey id);
+        Task<TSession> Find(TKey id);
         /// <summary>
         /// 根据会话 openid 查找会话对象
         /// </summary>
         /// <param name="openid">用户 openid</param>
         /// <returns>null, 如果未找到对象; 否则是找到的会话对象</returns>
-        Task<LoginSession<TKey>> FindByOpenid(string openid);
+        Task<TSession> FindByOpenid(string openid);
         /// <summary>
         /// 根据会话 unionid 查找会话对象
         /// </summary>
         /// <param name="unionid">用户 unionid</param>
         /// <returns>null, 如果未找到对象; 否则是找到的会话对象</returns>
-        Task<LoginSession<TKey>> FindByUnionid(string unionid);
+        Task<TSession> FindByUnionid(string unionid);
         /// <summary>
         /// 验证微信客户端接口返回数据的签名是否正确
         /// </summary>

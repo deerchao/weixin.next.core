@@ -17,8 +17,6 @@ namespace Weixin.Next.WXA
 
         public static string DecryptData(string encryptedData, string sessionKey, string iv)
         {
-            var buffer = Convert.FromBase64String(encryptedData);
-
             try
             {
                 using (var rijndaelManaged = new RijndaelManaged
