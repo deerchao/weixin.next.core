@@ -7,7 +7,7 @@ namespace Weixin.Next.MP.Api
 {
     // ReSharper disable InconsistentNaming
     /// <summary>
-    /// 微信带参数二维码
+    /// 微信公众号带参数二维码
     /// </summary>
     public static class Qrcode
     {
